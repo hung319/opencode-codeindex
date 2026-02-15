@@ -1,6 +1,6 @@
 {
   "name": "opencode-codeindex",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "OpenCode plugin that indexes directories with root file contents.",
   "author": {
     "name": "hung319",
