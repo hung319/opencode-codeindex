@@ -20,13 +20,7 @@ export interface TreeBuilderOptions {
   respectGitignore?: boolean;
 }
 
-export const DEFAULT_SKIP_NAMES = new Set([
-  '.git',
-  'node_modules',
-  '.opencode',
-  'dist',
-  'build',
-]);
+export const DEFAULT_SKIP_NAMES = new Set(['.git', 'node_modules', '.opencode', 'dist', 'build']);
 
 const DEFAULT_SKIP_EXTENSIONS = new Set(['.log']);
 
@@ -55,11 +49,7 @@ async function loadGitignore(rootPath: string, enabled: boolean): Promise<Ignore
   }
 }
 
-function shouldSkip(
-  name: string,
-  skipNames: Set<string>,
-  skipExtensions: Set<string>
-): boolean {
+function shouldSkip(name: string, skipNames: Set<string>, skipExtensions: Set<string>): boolean {
   if (skipNames.has(name)) return true;
   for (const ext of skipExtensions) {
     if (name.endsWith(ext)) return true;

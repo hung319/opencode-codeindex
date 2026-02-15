@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { indexDirectory } from '../src/index';
 
-async function withTempDir(fn: (dir: string) => Promise<void>): Promise<void> {
+async function withTempDir(fn: (_dir: string) => Promise<void>): Promise<void> {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'codeindex-tool-'));
   try {
     await fn(dir);

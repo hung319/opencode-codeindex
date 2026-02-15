@@ -3,43 +3,67 @@
 [![npm version](https://img.shields.io/npm/v/opencode-codeindex)](https://www.npmjs.com/package/opencode-codeindex)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> OpenCode plugin that indexes directories with root file contents.
+> OpenCode plugin that indexes directories with root file contents. Provides a tool to generate directory tree structures with root file contents for AI context.
 
 ## Features
 
 - 📁 Generate directory tree structures with root file contents
-- 🔍 Intelligently handle binary files and ignore patterns
+- 🔍 Intelligently handle binary files and respect `.gitignore` patterns
 - 📦 Configurable max file size for content inclusion
-- 🛠️ Custom commands for AI-assisted workflows
+- 🛠️ Exposes `tree_indexer` tool for OpenCode
 
 ## Installation
 
-```bash
-# Using bun
-bun add opencode-codeindex
+### From npm
 
-# Using npm
-npm install opencode-codeindex
+Add to your OpenCode configuration file (`opencode.json`):
 
-# Using yarn
-yarn add opencode-codeindex
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["opencode-codeindex"]
+}
 ```
+
+OpenCode will automatically install the plugin using Bun at startup.
+
+### From local files
+
+Place the plugin file in your OpenCode plugins directory:
+
+- `.opencode/plugins/` - Project-level plugins
+- `~/.config/opencode/plugins/` - Global plugins
 
 ## Usage
 
-### As an OpenCode Plugin
-
-Add to your OpenCode configuration:
+Once installed, the plugin exposes a `tree_indexer` tool that can be used in your OpenCode sessions:
 
 ```typescript
-import { CodeIndexPlugin } from 'opencode-codeindex';
-
-export default {
-  plugins: [CodeIndexPlugin],
-};
+// The tree_indexer tool is automatically available
+await ctx.tools.tree_indexer({
+  path: './src',
+  maxFileSize: 50000,
+});
 ```
 
-### Programmatic API
+### Available Commands
+
+The plugin also provides custom commands defined in Markdown frontmatter. Create `.md` files in `src/commands/`:
+
+```markdown
+---
+description: Analyze code structure
+agent: architect
+---
+
+Analyze the following directory structure and provide insights...
+
+{{ tree_indexer path="./src" }}
+```
+
+## Programmatic API
+
+You can also use this package programmatically in your own projects:
 
 ```typescript
 import { indexDirectory } from 'opencode-codeindex';
@@ -56,63 +80,57 @@ const output = await indexDirectory({
 console.log(output);
 ```
 
-## API
+### API Reference
 
-### `indexDirectory(args?: IndexArgs)`
+#### `indexDirectory(args?: IndexArgs)`
 
 Generates a formatted directory tree with root file contents.
 
 **Parameters:**
-
 - `args.path` (string, optional): Root path to index (defaults to current directory)
 - `args.maxFileSize` (number, optional): Maximum file size in bytes to include content
 
 **Returns:** Promise<string> - Formatted tree output
 
-## Tool: `tree_indexer`
+## Plugin Structure
 
-Available as a tool when using the plugin with OpenCode:
+This plugin follows the [OpenCode plugin specification](https://opencode.ai/docs/plugins/):
 
 ```typescript
-// Available in OpenCode context
-await ctx.tools.tree_indexer({
-  path: './src',
-  maxFileSize: 50000,
-});
-```
+import type { Plugin } from '@opencode-ai/plugin';
 
-## Commands
-
-The plugin provides custom commands defined in Markdown frontmatter:
-
-```markdown
----
-description: Analyze code structure
-agent: architect
----
-
-Analyze the following directory structure and provide insights...
-
-{{ tree_indexer path="./src" }}
+export const CodeIndexPlugin: Plugin = async (ctx) => {
+  return {
+    tool: {
+      tree_indexer: treeIndexerTool,
+    },
+    async config(config) {
+      // Add custom commands
+    },
+  };
+};
 ```
 
 ## Development
 
 ```bash
 # Install dependencies
-bun install
+npm install
 
 # Build
-bun run build
+npm run build
 
 # Run tests
-bun test
+npm test
 
 # Lint
-bun run lint
+npm run lint
 
 # Format
-bun run format
+npm run format
+
+# Type check
+npm run typecheck
 ```
 
 ## License
@@ -123,7 +141,8 @@ MIT © [OpenCode](https://github.com/hung319/opencode-codeindex)
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Repository
+## Links
 
-- [GitHub](https://github.com/hung319/opencode-codeindex)
-- [npm](https://www.npmjs.com/package/opencode-codeindex)
+- [GitHub Repository](https://github.com/hung319/opencode-codeindex)
+- [npm Package](https://www.npmjs.com/package/opencode-codeindex)
+- [OpenCode Documentation](https://opencode.ai/docs/plugins/)
