@@ -3,8 +3,8 @@
   "version": "0.1.5",
   "description": "OpenCode plugin that indexes directories with root file contents.",
   "author": {
-    "name": "OpenCode",
-    "email": "dev@opencode.ai"
+    "name": "hung319",
+    "email": "Hungh6122@gmail.com"
   },
   "type": "module",
   "main": "dist/index.js",
